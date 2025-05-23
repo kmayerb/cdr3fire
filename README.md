@@ -13,12 +13,12 @@ Efficient regex pattern matching for CDR3β sequences using k-mer indexing accel
 ## Installation
 
 ```bash
-pip install cdr3fire
+!pip install git+https://github.com/kmayerb/cdr3fire.git
 ```
 
 For development:
 ```bash
-git clone https://github.com/yourusername/cdr3fire.git
+git clone https://github.com/kmayerb/cdr3fire.git
 cd cdr3fire
 pip install -e ".[dev]"
 ```
@@ -26,6 +26,18 @@ pip install -e ".[dev]"
 ## Quick Start
 
 ### Command Line Usage
+
+Until installed:
+```
+PYTHONPATH=src python -m cdr3fire.cli --h
+```
+
+```bash
+# Match patterns from CSV files
+PYTHONPATH=src python -m cdr3fire.cli --patterns patterns.csv --strings sequences.csv \
+         --pattern_col regex --string_col cdr3 \
+         --output matches.npz
+```
 
 ```bash
 # Match patterns from CSV files
