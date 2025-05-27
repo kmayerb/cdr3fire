@@ -11,12 +11,16 @@ from scipy.sparse import lil_matrix
 def build_3mer_index(strings: List[str]) -> defaultdict:
     """
     Build a k-mer index for 3-mers from a list of strings.
-    
-    Args:
-        strings: List of strings to index
-        
-    Returns:
-        Dictionary mapping 3-mers to sets of string indices containing them
+
+    Parameters
+    ----------
+    strings : list of str
+        List of strings to index.
+
+    Returns
+    -------
+    index : collections.defaultdict
+        Dictionary mapping 3-mers to sets of string indices containing them.
     """
     index = defaultdict(set)
     for i, s in enumerate(strings):
@@ -29,13 +33,18 @@ def build_3mer_index(strings: List[str]) -> defaultdict:
 def query_3mers(index: defaultdict, kmers: List[str]) -> Set[int]:
     """
     Query the k-mer index for strings containing all specified k-mers.
-    
-    Args:
-        index: k-mer index from build_3mer_index
-        kmers: List of 3-mers to search for
-        
-    Returns:
-        Set of string indices containing all specified k-mers
+
+    Parameters
+    ----------
+    index : collections.defaultdict
+        k-mer index from build_3mer_index.
+    kmers : list of str
+        List of 3-mers to search for.
+
+    Returns
+    -------
+    indices : set of int
+        Set of string indices containing all specified k-mers.
     """
     sets = [index.get(kmer, set()) for kmer in kmers]
     return set.intersection(*sets) if sets else set()
@@ -44,12 +53,16 @@ def query_3mers(index: defaultdict, kmers: List[str]) -> Set[int]:
 def regex_literal_3mers(regex: str) -> Set[str]:
     """
     Extract literal 3-mers from a regex pattern for pre-filtering.
-    
-    Args:
-        regex: Regular expression pattern
-        
-    Returns:
-        Set of 3-mer strings that must be present for the regex to match
+
+    Parameters
+    ----------
+    regex : str
+        Regular expression pattern.
+
+    Returns
+    -------
+    kmers : set of str
+        Set of 3-mer strings that must be present for the regex to match.
     """
     parsed = sre_parse.parse(regex)
     kmers = set()
@@ -74,13 +87,18 @@ def regex_literal_3mers(regex: str) -> Set[str]:
 def match_regexes(regexes: List[str], strings: List[str]):
     """
     Match multiple regex patterns against multiple strings efficiently.
-    
-    Args:
-        regexes: List of regex patterns
-        strings: List of strings to match against
-        
-    Returns:
-        Sparse CSR matrix where mat[i,j] = 1 if regexes[i] matches strings[j]
+
+    Parameters
+    ----------
+    regexes : list of str
+        List of regex patterns.
+    strings : list of str
+        List of strings to match against.
+
+    Returns
+    -------
+    mat : scipy.sparse.csr_matrix
+        Sparse CSR matrix where mat[i, j] = 1 if regexes[i] matches strings[j].
     """
     index = build_3mer_index(strings)
     mat = lil_matrix((len(regexes), len(strings)), dtype=np.uint8)
@@ -103,13 +121,18 @@ def match_regexes(regexes: List[str], strings: List[str]):
 def match_regexes_against_cdr3s(regexes: List[str], cdr3_list: List[str]) -> List[Tuple[str, List[int]]]:
     """
     Match regex patterns against CDR3 sequences and return matches with indices.
-    
-    Args:
-        regexes: List of regex patterns
-        cdr3_list: List of CDR3 sequences
-        
-    Returns:
-        List of tuples (regex, list_of_matching_indices)
+
+    Parameters
+    ----------
+    regexes : list of str
+        List of regex patterns.
+    cdr3_list : list of str
+        List of CDR3 sequences.
+
+    Returns
+    -------
+    results : list of tuple
+        List of tuples (regex, list_of_matching_indices).
     """
     index = build_3mer_index(cdr3_list)
     results = []
